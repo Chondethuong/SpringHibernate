@@ -14,9 +14,10 @@ public class HomeController {
 	@Autowired
 	private CustomerService customerService;
 	
-	@RequestMapping({"/","/home","/login"})
+	@RequestMapping(value = {"/","/login"})
 	public String Home(@RequestParam(value="error", required = false)final String error, final Model model){
-		model.addAttribute("message", "Login Failed !");
+		if(null != error)
+			model.addAttribute("message", "Login Failed !");
 		return "index";
 	}
 }

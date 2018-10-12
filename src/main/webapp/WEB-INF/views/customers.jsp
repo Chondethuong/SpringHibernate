@@ -10,7 +10,7 @@
 <body>
 	<div>
 		<h3>Search</h3><br>
-		<form:form action="./search" modelAttribute="customerFormData" method="POST" name="search">
+		<form:form action="./search" modelAttribute="customerFormData" method="POST" id="search">
 					<table>
 					<tr><td>Name</td><td>
 						<form:input class="input100" type="text" path="name" />
@@ -49,21 +49,23 @@
 						<form:input type="date" path="dob"/>
 					</div>
 					 </td>
+					 </tr>
+					 <tr>
 					 <td>
+					 <form:hidden path="page"/>
 					<div class="container-login100-form-btn">
-						<div class="wrap-login100-form-btn">
-							<div class="login100-form-bgbtn"></div>
-							<button class="login100-form-btn" type="submit" name="search">
+							<button class="login100-form-btn" onclick="doSearch();">
 								Search
 							</button>
 						</div>
-					</div>
-					</td></tr>
+					</td>
+					<td>
+					<input type="button" name="search" value="Clear" onclick="clearSearchCriteria();">
+					</td>
+					</tr>
 					</table>
+				<input type="hidden" value="${customerFormData.page }" id = "currentPage">
 				</form:form>
-				<button class="login100-form-btn" name="search" onclick="clearSearchCriteria();">
-					Clear
-				</button>
 						
 	</div>
 	<div>
@@ -85,6 +87,11 @@
 			Update
 		</button>
 		</td>
+		<td>
+		<button class="login100-form-btn" type="submit" id="update" onclick="deleteCustomers();">
+			Delete
+		</button>
+		</td>
 		</tr>
 	</table>
 	</div>
@@ -92,19 +99,36 @@
 	<br>
 	<div>
 		<table border="1" style="border-collapse: collapse">
-			<thead><tr><th></th><th>Name</th><th>Date of Birth</th><th>Phone</th><th>Email</th></tr></thead>
+			<thead><tr><th></th><th>Name &#9660;</th><th>Date of Birth &#9660;</th><th>Phone &#9660;</th><th>Email &#9660;</th></tr></thead>
 			<c:forEach var="customer" items="${customers}">
 			<tr><td><input type="checkbox" name="idnumber" value="${customer.id }"> </td><td>${customer.name}</td><td> ${customer.dob}</td> <td>${customer.phone }</td><td>${customer.email }</td></tr>
 			</c:forEach>
 		</table>
+		<button value="1" onclick="paging(this);" id="firstPage"><<</button>
+		<button value="${customerFormData.page - 1}" onclick="paging(this);" id="prevPage"><</button>
 		<c:forEach begin="1" end="${pages }" varStatus="index">
-			<input type="button" value = ${index.index } onclick="paging(this);">
+			<input type="button" value = ${index.index } <c:if test="${index.index == customerFormData.page}">disabled="disabled" </c:if> 
+			onclick="paging(this);">
 		</c:forEach>
+		<input type="hidden" value="${pages }" id="maxPage">
+		<button value="${customerFormData.page + 1 }" onclick="paging(this);" id="nextPage">></button>
+		<button value="${pages }" onclick="paging(this);" id="lastPage">>></button>
 	</div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-var selectedPage;
+$(document).ready(function () {
+	var maxPage = document.getElementById("maxPage").value; 
+	var currPage = document.getElementById("currentPage").value;
+    if (currPage == 1 || currPage == 0){
+    	document.getElementById("firstPage").disabled = true;
+    	document.getElementById("prevPage").disabled = true;
+    }
+    if (currPage == maxPage || maxPage == 0){
+    	document.getElementById("lastPage").disabled = true;
+    	document.getElementById("nextPage").disabled = true;
+    }
+ });
 function update(){
 	var checkboxes = document.getElementsByName("idnumber");
 	var checkboxesChecked = [];
@@ -132,9 +156,42 @@ function update(){
 		
 	}
 }
+function deleteCustomers(){
+	var checkboxes = document.getElementsByName("idnumber");
+	var checkboxesChecked = [];
+	var id = "";
+	for (var i=0; i<checkboxes.length; i++) {
+	     if (checkboxes[i].checked) {
+	    	 checkboxesChecked.push(checkboxes[i]);
+	     }
+	 }
+	if (checkboxesChecked.length == 0){
+		alert("Please select customer to delete");
+	}else{
+		var result = confirm("Want to delete?");
+		if (result){
+			for (var i = 0; i< checkboxesChecked.length; i++){
+				id += checkboxesChecked[i].value +",";	
+			}
+			window.location.href = "${pageContext.request.contextPath}/deleteCustomer?id=" + id;
+		}
+	}
+}
 function paging(page){
-		selectedPage = page.value;
-		window.location.href = "${pageContext.request.contextPath}/customers?page=" + selectedPage;
+	var selectedPage;
+	selectedPage = page.value;
+	$("#page").val(selectedPage);
+    $("#search").submit(); 
+}
+function clearSearchCriteria(){
+	$(':input','#search')
+	  .not(':button, :submit, :reset, :hidden')
+	  .val('')
+	  .removeAttr('selected');
+}
+function doSearch(){
+	$("#page").val(1);
+    $("#search").submit(); 
 }
 </script>
 </html>

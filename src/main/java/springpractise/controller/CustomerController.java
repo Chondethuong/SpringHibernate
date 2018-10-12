@@ -16,7 +16,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,14 +36,14 @@ public class CustomerController {
 	
 	@RequestMapping(value={"customers", "search"})
 	public String displayCustomer(@ModelAttribute("customerFormData")@Valid CustomeFormData customerForm, BindingResult result, 
-			final Model model, @RequestParam(name = "page", required = false, defaultValue = "1")int page){
+			final Model model){
 		if(result.hasErrors()){
 			model.addAttribute("customerFormData", customerForm);
 			return "customers";
 		}
-		Customer customer = customerForm.convert();
-		List<Customer> customers = customerService.searchCustomer(customer, page);
-		long total = customerService.totalCustomer(customer);
+		//Customer customer = customerForm.convert();
+		List<Customer> customers = customerService.searchCustomer(customerForm);
+		long total = customerService.totalCustomer(customerForm);
 		model.addAttribute("pages", total%5 == 0 ? total/5 : total/5 + 1);
 		model.addAttribute("customers", customers);
 		return "customers";
@@ -104,6 +106,32 @@ public class CustomerController {
 	public ModelAndView getExcel(){
 		List<Customer> customers = customerService.getAll();
 		return new ModelAndView(new ExcelReport(), "customers", customers);
+	}
+	
+	@RequestMapping(value = "deleteCustomer")
+	public ModelAndView deleteCustomer(@RequestParam String id, final Model model){
+		ModelAndView modelview = null;
+		try{
+			if(null != id){
+				String[] ids = id.split(",");
+				if (ids.length !=0){
+					for (String string : ids) {
+						if (!string.trim().equals("")){
+							Customer customer = new Customer();
+							customer.setId(Integer.parseInt(string));
+							customerService.deleteCustomer(customer);
+						}
+					}
+				}
+			}
+			modelview = new ModelAndView("redirect:/customers");
+		}
+		catch(HibernateException ex){
+			modelview.addObject("message", "Cannot save Customer");
+		}
+		finally {
+			return modelview;
+		}
 	}
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {

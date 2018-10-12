@@ -20,6 +20,8 @@ public class CustomeFormData {
 	Boolean gender;
 	String address;
 	String title;
+	Integer page;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -67,6 +69,12 @@ public class CustomeFormData {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public Integer getPage() {
+		return page;
+	}
+	public void setPage(Integer page) {
+		this.page = page;
 	}
 	public Customer convert(){
 		Customer customer = new Customer(id, name, dob, phone, email, gender, address, title);

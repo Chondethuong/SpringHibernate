@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
 
 import springpractise.dao.CustomerDAO;
+import springpractise.entity.CustomeFormData;
 import springpractise.entity.Customer;
 
 @Transactional
@@ -23,7 +24,7 @@ public class CustomerDAOImpl extends BaseDAOImpl implements CustomerDAO{
 		return cr.list();
 	}
 	@SuppressWarnings("unchecked")
-	public List<Customer> searchCustomer(Customer customer, int page) {
+	public List<Customer> searchCustomer(CustomeFormData customer) {
 		Criteria cr = getSession().createCriteria(Customer.class);
 		if (null != customer.getName() && !customer.getName().trim().equals("")){
 			cr.add(Restrictions.like("name", "%"+customer.getName().trim()+"%"));
@@ -40,7 +41,9 @@ public class CustomerDAOImpl extends BaseDAOImpl implements CustomerDAO{
 		if (null != customer.getGender()){
 			cr.add(Restrictions.eq("gender", customer.getGender()));
 		}
-		cr.setFirstResult(page == 1 ? 1 :(page-1)*5);
+		if (null == customer.getPage())
+			customer.setPage(1);
+		cr.setFirstResult(customer.getPage() == 1 ? 0 :(customer.getPage()-1)*5);
 		cr.setMaxResults(5);
 		return cr.list();
 	}
@@ -75,7 +78,7 @@ public class CustomerDAOImpl extends BaseDAOImpl implements CustomerDAO{
 			session.saveOrUpdate(customer);
 		}
 	}
-	public long totalCustomer(Customer customer) {
+	public long totalCustomer(CustomeFormData customer) {
 
 		Criteria cr = getSession().createCriteria(Customer.class);
 		if (null != customer.getName() && !customer.getName().trim().equals("")){
