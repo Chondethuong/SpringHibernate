@@ -1,0 +1,6 @@
+.checkbox-inline label, .radio-inline label{
+  font-weight: normal;
+}
+.error{
+	color:red;
+}

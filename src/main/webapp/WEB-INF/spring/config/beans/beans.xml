@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+   <bean id="customerService" class="springpractise.service.impl.CustomerServiceImpl" >
+   		<property name="customerDAO" ref="customerDAO" />
+   </bean>
+   <bean id="accountService" class="springpractise.service.impl.AccountServiceImpl" >
+   		<property name="accountDAO" ref="accountDAO" />
+   </bean>
+   <bean id="customerDAO" class="springpractise.dao.impl.CustomerDAOImpl" parent="baseDAO">
+   		<property name="sessionFactory" ref="sessionFactory"></property>
+   </bean>
+   <bean id="accountDAO" class="springpractise.dao.impl.AccountDAOImpl" parent="baseDAO">
+   		<property name="sessionFactory" ref="sessionFactory"/>
+   </bean>
+   <bean id="userDetailsServiceImpl" class="springpractise.service.impl.UserDetailsServiceImpl">
+   		<property name="accountDAO" ref="accountDAO"/>
+   </bean>
+   <bean id="baseDAO" class="springpractise.dao.impl.BaseDAOImpl">
+   		<property name="sessionFactory" ref="sessionFactory"/>
+   </bean>
+   <bean id="authenticationSuccessHandler" class="springpractise.service.impl.SimpleAuthenticationSuccessHandler">
+  </bean>
+</beans>
