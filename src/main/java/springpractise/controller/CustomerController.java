@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import springpractise.entity.CustomeFormData;
+import springpractise.entity.CustomerFormData;
 import springpractise.entity.Customer;
 import springpractise.entity.Title;
 import springpractise.service.CustomerService;
@@ -35,13 +35,12 @@ public class CustomerController {
 	CustomerService customerService;
 	
 	@RequestMapping(value={"customers", "search"})
-	public String displayCustomer(@ModelAttribute("customerFormData")@Valid CustomeFormData customerForm, BindingResult result, 
+	public String displayCustomer(@ModelAttribute("customerFormData")@Valid CustomerFormData customerForm, BindingResult result, 
 			final Model model){
 		if(result.hasErrors()){
 			model.addAttribute("customerFormData", customerForm);
 			return "customers";
 		}
-		//Customer customer = customerForm.convert();
 		List<Customer> customers = customerService.searchCustomer(customerForm);
 		long total = customerService.totalCustomer(customerForm);
 		model.addAttribute("pages", total%5 == 0 ? total/5 : total/5 + 1);

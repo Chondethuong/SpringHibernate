@@ -40,21 +40,6 @@
 			    	</div>
 			    </div>
 			    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-				
-				<!-- <table>
-					<tr>
-						<label for="usr">Name:</label>
-						<td><input type='text' name='username'></td>
-					</tr>
-					<tr>
-						<td>Password:</td>
-						<td><input type='password' name='password' /></td>
-					</tr>
-					<tr>
-						<td colspan='2'><input name="submit" type="submit" value="login" /></td>
-					</tr>
-				</table> -->
-				
 			</form>
 			</div>
 		</div>

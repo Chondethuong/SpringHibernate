@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.transaction.annotation.Transactional;
 
 import springpractise.dao.CustomerDAO;
-import springpractise.entity.CustomeFormData;
+import springpractise.entity.CustomerFormData;
 import springpractise.entity.Customer;
 
 @Transactional
@@ -24,7 +25,7 @@ public class CustomerDAOImpl extends BaseDAOImpl implements CustomerDAO{
 		return cr.list();
 	}
 	@SuppressWarnings("unchecked")
-	public List<Customer> searchCustomer(CustomeFormData customer) {
+	public List<Customer> searchCustomer(CustomerFormData customer) {
 		Criteria cr = getSession().createCriteria(Customer.class);
 		if (null != customer.getName() && !customer.getName().trim().equals("")){
 			cr.add(Restrictions.like("name", "%"+customer.getName().trim()+"%"));
@@ -43,6 +44,34 @@ public class CustomerDAOImpl extends BaseDAOImpl implements CustomerDAO{
 		}
 		if (null == customer.getPage())
 			customer.setPage(1);
+		
+		if (null != customer.getSortDob()){
+			if (!customer.getSortDob()){
+				cr.addOrder(Order.desc("dob"));
+			}
+			else{
+				cr.addOrder(Order.asc("dob"));
+			}
+		}
+		if (null != customer.getSortPhone()){
+			if (!customer.getSortPhone()){
+				cr.addOrder(Order.asc("phone"));
+			}else{
+				cr.addOrder(Order.desc("phone"));
+			}
+		}
+		if (null != customer.getSortEmail()){ 
+			if (!customer.getSortEmail()){
+				cr.addOrder(Order.asc("email"));
+			}else{
+				cr.addOrder(Order.desc("email"));
+			}
+		}
+		if (null == customer.getSortName() || !customer.getSortName()){
+			cr.addOrder(Order.asc("name"));
+		}else{
+			cr.addOrder(Order.desc("name"));
+		}
 		cr.setFirstResult(customer.getPage() == 1 ? 0 :(customer.getPage()-1)*5);
 		cr.setMaxResults(5);
 		return cr.list();
@@ -78,7 +107,7 @@ public class CustomerDAOImpl extends BaseDAOImpl implements CustomerDAO{
 			session.saveOrUpdate(customer);
 		}
 	}
-	public long totalCustomer(CustomeFormData customer) {
+	public long totalCustomer(CustomerFormData customer) {
 
 		Criteria cr = getSession().createCriteria(Customer.class);
 		if (null != customer.getName() && !customer.getName().trim().equals("")){

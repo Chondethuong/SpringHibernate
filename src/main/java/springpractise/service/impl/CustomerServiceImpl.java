@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Required;
 
 import springpractise.dao.CustomerDAO;
-import springpractise.entity.CustomeFormData;
+import springpractise.entity.CustomerFormData;
 import springpractise.entity.Customer;
 import springpractise.service.CustomerService;
 
@@ -21,7 +21,7 @@ public class CustomerServiceImpl implements CustomerService{
 		return customerDAO.getAll();
 	}
 
-	public List<Customer> searchCustomer(CustomeFormData customer) {
+	public List<Customer> searchCustomer(CustomerFormData customer) {
 		return customerDAO.searchCustomer(customer);
 	}
 
@@ -41,7 +41,7 @@ public class CustomerServiceImpl implements CustomerService{
 		customerDAO.updateCustomer(customer);
 	}
 
-	public long totalCustomer(CustomeFormData customer) {
+	public long totalCustomer(CustomerFormData customer) {
 		return customerDAO.totalCustomer(customer);
 	}
 }

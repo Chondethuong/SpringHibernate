@@ -8,11 +8,13 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<title>Insert title here</title>
+<title>Customer Listing</title>
 </head>
 <body>
-	<div>
-		<h3>Search</h3><br>
+	<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+		 <div class="table-responsive">
 		<form:form action="./search" modelAttribute="customerFormData" method="POST" id="search">
 		<fieldset>
 		<legend>Search</legend>
@@ -32,16 +34,13 @@
 					<tr>
 					<td>Email</td>
 					<td>
-					<div class="wrap-input100 validate-input" data-validate="Enter password">
+					<div>
 						<form:input class="input100" type="text" path="email"/>
 						<form:errors path="email" cssClass="error"></form:errors>
 					</div>
 					</td>
-					<td>Gender</td>
 					<td>
-					<div class="wrap-input100 validate-input" data-validate="Enter password">
-						<!-- Male <input class="input100" type="radio" name="gender" value="true" checked="checked">
-						Female <input class="input100" type="radio" name="gender" value="false"> -->
+					<div>
 						Male <form:radiobutton path="gender" value="true" />
 						Female <form:radiobutton path="gender" value="false"/>
 					</div>
@@ -70,11 +69,19 @@
 					</tr>
 					</table>
 				<input type="hidden" value="${customerFormData.page }" id = "currentPage">
+				<form:hidden path="sortName"/>
+				<form:hidden path="sortDob"/>
+				<form:hidden path="sortPhone"/>
+				<form:hidden path="sortEmail"/>
 				</fieldset>
 				</form:form>
 						
 	</div>
-	<div>
+	</div></div></div>
+	<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+		 <div class="table-responsive">
 	<h3>Command</h3>
 	<table><tr><td>
 		<form:form action="./create">
@@ -101,6 +108,8 @@
 		</tr>
 	</table>
 	</div>
+	</div></div></div>
+	
 	<br>
 	<br>
 	<div class="container">
@@ -108,26 +117,33 @@
 		<div class="col-md-12">
 		 <div class="table-responsive">
 		<table border="1" style="border-collapse: collapse" class="table table-bordred table-striped">
-			<thead><tr><th></th><th>Name &#9660;</th><th>Date of Birth &#9660;</th><th>Phone &#9660;</th><th>Email &#9660;</th></tr></thead>
+			<thead><tr><th></th>
+			<th>Name <input type="button" value= <c:choose><c:when test="${customerFormData.sortName}">"&#9650;"</c:when> <c:otherwise>"&#9660;"</c:otherwise> </c:choose>
+			onclick="sortCriteria('Name');"></th>
+			<th>Date of Birth<input type="button" value= <c:choose><c:when test="${customerFormData.sortDob}">"&#9650;"</c:when> <c:otherwise>"&#9660;"</c:otherwise></c:choose>
+			onclick="sortCriteria('Dob');"></th>
+			<th>Phone <input type="button" value= <c:choose><c:when test="${customerFormData.sortPhone}">"&#9650;"</c:when> <c:otherwise>"&#9660;"</c:otherwise></c:choose>
+			onclick="sortCriteria('Phone');"></th>
+			<th>Email <input type="button" value= <c:choose><c:when test="${customerFormData.sortEmail}">"&#9650;"</c:when> <c:otherwise>"&#9660;"</c:otherwise></c:choose>
+			onclick="sortCriteria('Email');"></th>
+			
+			</tr></thead>
 			<c:forEach var="customer" items="${customers}">
 			<tr><td><input type="checkbox" name="idnumber" value="${customer.id }"> </td><td>${customer.name}</td><td> ${customer.dob}</td> <td>${customer.phone }</td><td>${customer.email }</td></tr>
 			</c:forEach>
 		</table>
 		
 	</div>
-	<div class="clearfix"></div>
-	<ul class="pagination pull-right">
-		<li><button value="1" onclick="paging(this);" id="firstPage"><<</button></li>
-		<li><button value="${customerFormData.page - 1}" onclick="paging(this);" id="prevPage"><</button></li>
+	<button value="1" onclick="paging(this);" id="firstPage"><<</button>
+		<button value="${customerFormData.page - 1}" onclick="paging(this);" id="prevPage"><</button>
 		<c:forEach begin="1" end="${pages }" varStatus="index">
-			<li><a><input type="button" value = ${index.index } <c:if test="${index.index == customerFormData.page}">disabled="disabled" </c:if> 
-			onclick="paging(this);"></a></li>
+			<input type="button" value = ${index.index } <c:if test="${index.index == customerFormData.page}">disabled="disabled" </c:if> 
+			onclick="paging(this);">
 		</c:forEach>
 		<input type="hidden" value="${pages }" id="maxPage">
 		<button value="${customerFormData.page + 1 }" onclick="paging(this);" id="nextPage">></button>
 		<button value="${pages }" onclick="paging(this);" id="lastPage">>></button>
-		<li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
-	</ul>
+	<input type="hidden" value="${pages }" id="maxPage">
 	</div>
 	</div>
 	</div>
@@ -208,7 +224,24 @@ function clearSearchCriteria(){
 }
 function doSearch(){
 	$("#page").val(1);
+	$("#sortName").val(null);
+	$("#sortDob").val(null);
+	$("#sortPhone").val(null);
+	$("#sortEmail").val(null);
     $("#search").submit(); 
+}
+function sortCriteria(o){
+	var order = $("#sort"+o).val();
+	$("#sortName").val(null);
+	$("#sortDob").val(null);
+	$("#sortPhone").val(null);
+	$("#sortEmail").val(null);
+	if (order == null || order == "" || order == "false")
+		$("#sort"+o).val(true);
+	else
+		$("#sort"+o).val(false);
+	$("#page").val(1);
+	$("#search").submit();
 }
 </script>
 </html>

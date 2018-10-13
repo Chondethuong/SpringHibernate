@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @SuppressWarnings("deprecation")
-public class CustomeFormData {
+public class CustomerFormData {
 	Integer id;
 	@Length (max=255, message = "Name is too long")
 	String name;
@@ -21,6 +21,10 @@ public class CustomeFormData {
 	String address;
 	String title;
 	Integer page;
+	Boolean sortName;
+	Boolean sortDob;
+	Boolean sortPhone;
+	Boolean sortEmail;
 	
 	public Integer getId() {
 		return id;
@@ -75,6 +79,31 @@ public class CustomeFormData {
 	}
 	public void setPage(Integer page) {
 		this.page = page;
+	}
+	
+	public Boolean getSortName() {
+		return sortName;
+	}
+	public void setSortName(Boolean sortName) {
+		this.sortName = sortName;
+	}
+	public Boolean getSortDob() {
+		return sortDob;
+	}
+	public void setSortDob(Boolean sortDob) {
+		this.sortDob = sortDob;
+	}
+	public Boolean getSortPhone() {
+		return sortPhone;
+	}
+	public void setSortPhone(Boolean sortphone) {
+		this.sortPhone = sortphone;
+	}
+	public Boolean getSortEmail() {
+		return sortEmail;
+	}
+	public void setSortEmail(Boolean sortEmail) {
+		this.sortEmail = sortEmail;
 	}
 	public Customer convert(){
 		Customer customer = new Customer(id, name, dob, phone, email, gender, address, title);
