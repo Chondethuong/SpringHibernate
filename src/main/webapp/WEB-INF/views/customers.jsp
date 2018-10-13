@@ -9,6 +9,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <title>Customer Listing</title>
+<style>
+.error{
+    color: red;
+}
+</style>
 </head>
 <body>
 	<div class="container">
@@ -50,7 +55,8 @@
 					<td>Date of Birth</td>
 					<td>
 					<div class="wrap-input100 validate-input">
-						<form:input type="date" path="dob"/>
+						<form:input type="date" path="dob" />
+						<form:errors path="dob" cssClass="error"></form:errors>
 					</div>
 					 </td>
 					 </tr>

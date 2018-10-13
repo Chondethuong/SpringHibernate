@@ -33,16 +33,19 @@ public class CustomerController {
 	
 	@Autowired
 	CustomerService customerService;
-	
+	private List<Customer> customers;
+	private long total;
 	@RequestMapping(value={"customers", "search"})
 	public String displayCustomer(@ModelAttribute("customerFormData")@Valid CustomerFormData customerForm, BindingResult result, 
 			final Model model){
 		if(result.hasErrors()){
 			model.addAttribute("customerFormData", customerForm);
+			model.addAttribute("pages", total%5 == 0 ? total/5 : total/5 + 1);
+			model.addAttribute("customers", customers);
 			return "customers";
 		}
-		List<Customer> customers = customerService.searchCustomer(customerForm);
-		long total = customerService.totalCustomer(customerForm);
+		customers = customerService.searchCustomer(customerForm);
+		total = customerService.totalCustomer(customerForm);
 		model.addAttribute("pages", total%5 == 0 ? total/5 : total/5 + 1);
 		model.addAttribute("customers", customers);
 		return "customers";
